@@ -20,8 +20,8 @@ Y_hat = X2 * beta - alpha
 
 #plot the raw data
 plt.scatter(X, Y, alpha=0.3)
-plt.xlabel("Bench Daily Return")
-plt.ylabel("Ticker Daily Return")
+plt.xlabel("Benchmark Daily Return")
+plt.ylabel("Portfolio Daily Return")
 #add the regression line
 plt.plot(X2, Y_hat, 'r', alpha=0.9)
 
