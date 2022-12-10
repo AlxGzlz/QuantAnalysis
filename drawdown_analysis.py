@@ -22,11 +22,13 @@ low_range = average_drawdown - std_drawdown
 variation_ratio = high_range/max_drawdown
 
 #plot the drawdown registered on the selected tim period
+print(tabulate([["Average Drawdown:",average_drawdown*100],["High range:", high_range*100], ["Low range:", low_range*100],["Variation ratio:", variation_ratio*100]], headers=["Indicator", "in % (by default)"]))
+print(f"if Low Range negative: it is positive 'drawdown'")
+print("")
 plt.title("Drawdown chart")
 plt.xlabel('datetime')
 plt.ylabel("% drawdown")
 plt.plot(df_drawdown['DD_PCT']*100, label='drawdown',c='r')
 plt.legend
 plt.show
-print(tabulate([["Average Drawdown:",average_drawdown*100],["High range:", high_range*100], ["Low range:", low_range*100],["Variation ratio:", variation_ratio*100]], headers=["Indicator", "in %"]))
-print(f"if Low Range negative: it is positive 'drawdown'")
+print(f"Calmar ratio:", float(risk_analysis['calmar ratio']))
