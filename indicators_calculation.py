@@ -87,11 +87,8 @@ def get_ulcer_index(df):
 risk_analysis['ulcer index'] = get_ulcer_index(df_returns)
 
 #compute the Compound Annual Growth Rate
-
 def get_cagr(df):
     cagr = pta.cagr(df)
     return cagr
 
 risk_analysis['cagr'] = get_cagr(df_day['close'])
-
-print(risk_analysis)
