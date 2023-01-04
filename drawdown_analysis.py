@@ -32,6 +32,7 @@ print("")
 print(f"Calmar ratio:", round(float(risk_analysis['calmar ratio']), 4))
 print(f"Coumpound Annual Growth Rate:", round(float(risk_analysis['cagr']), 4))
 print(f"Calmar/CAGR:", round(float(calmar_over_cagr), 4))
+%matplotlib widget
 plt.title("Drawdown chart")
 plt.xlabel('datetime')
 plt.ylabel("% drawdown")
