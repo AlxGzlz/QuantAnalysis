@@ -20,12 +20,22 @@ y = x+1
 while ratio_analysis['sortino below 0'][x]==ratio_analysis['sortino below 0'][y]:
     x+=1
     if ratio_analysis['sortino below 0'][x]>ratio_analysis['sortino below 0'][y]:
-        break
-    sortino_bullish_signal = ratio_analysis.index[x]
+    sortino_bullish_signal[x] = ratio_analysis.index[x]
 
+#identify when the Sortino ratio goes below 0 => bearish signal
+while ratio_analysis['sortino below 0'][x]==ratio_analysis['sortino below 0'][y]:
+	x+=1
+	if ratio_analysis['sortino below 0'][x]<ratio_analysis['sortino below 0'][y]:
+	sortino_bearish_signal[x] = ratio_analysis.index[x]
+	
 #identify when the Sharpe ration goes above 0 => bullish signal
 while ratio_analysis['sharpe below 0'][x]==ratio_analysis['sharpe below 0'][y]:
     x+=1
     if ratio_analysis['sharpe below 0'][x]>ratio_analysis['sharpe below 0'][y]:
-        break
-    sharpe_bullish_signal = ratio_analysis.index[x]
+    sharpe_bullish_signal[x] = ratio_analysis.index[x]
+
+#identify when the Sharpe ration goes below 0 => bearish signal
+while ratio_analysis['sharpe below 0'][x]==ratio_analysis['sharpe below 0'][y]:
+    x+=1
+    if ratio_analysis['sharpe below 0'][x]<ratio_analysis['sharpe below 0'][y]:
+    sharpe_bearish_signal[x] = ratio_analysis.index[x]]
