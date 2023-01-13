@@ -1,6 +1,6 @@
 ratio_analysis = pd.DataFrame()
 #calculate the rolling Sharpe ratio over the loaded time period
-ratio_analysis['rolling_sharpe'] = qt.stats.rolling_sharpe(df_returns, rolling_period=126)
+ratio_analysis['rolling_sharpe'] = qt.stats.rolling_sharpe(df_returns)
 #calculate the Sortino ratio over the loaded time period 
 ratio_analysis['rolling_sortino'] = qt.stats.rolling_sortino(df_returns)
 
@@ -28,31 +28,42 @@ risk_profit_rows = count_rows(ratio_analysis, 'sharpe above sortino')
 
 #identify the % of days when the Sharpe ratio is under or above 0 during the selected time period
 av_negative_sortino = ((days - sortino_rows[1]) - 1)/days*100
-av_positive_sortino = ((days - sortino_rows[0]) - 1)/days*100
+av_positive_sortino = ((days - sortino_rows[0]))/days*100
 #identify the % of days when the Sharpe ratio is under or above 0 during the selected time period
 av_negative_sharpe = ((days - sharpe_rows[1]) - 1)/days*100
-av_positive_sharpe = ((days - sharpe_rows[0]) - 1)/days*100
+av_positive_sharpe = ((days - sharpe_rows[0]))/days*100
 #identify the % of days when the Sharpe ratio is under or above the Sortino ratio during the selected time period
 av_negative_risk = ((days - risk_profit_rows[1]) - 1)/days*100
-av_positive_risk = ((days - risk_profit_rows[0]) - 1)/days*100
+av_positive_risk = ((days - risk_profit_rows[0]))/days*100
 
-if av_negative_sortino < av_positive_sortino:
-    comment_av_sortino = 1
-else: comment_av_sortino = 0,5
+def define_comment(a,b):
+    if a < b: 
+        return 1
+    else: 
+        return  0.5
+        
+comment_av_sortino = define_comment(av_negative_sortino, av_positive_sortino)
+comment_av_sharpe = define_comment(av_negative_sharpe, av_positive_sharpe)
+comment_av_risk = define_comment(av_negative_risk, av_positive_risk)
+             
+def get_result(a,b,c):
+    d = (a+b+c)
+    if d ==3 :
+        return "risk mitigated over the period"
+    elif d >=2:
+        return "significant risk over the period"
+    elif d >=1.5:
+        return "high risk/low return over the period"
     
-if av_negative_sharpe < av_positive_sharpe:
-    comment_av_sharpe = 1
-else: comment_av_sharpe = 0,5
-    
-if av_negative_risk < av_positive_risk:
-    comment_av_risk = 2
-else: comment_av_risk = 1
-    
-result_av = (float(comment_av_sortino) + float(comment_av_sharpe) + float(comment_av_risk)
+result = get_result(float(comment_av_sortino),float(comment_av_sharpe),float(comment_av_risk))
 
-if result_av >=3.5:
-    return "risk mitigated over the period"
-elif result_av == 3:
-    return "significant risk over the period"
-elif result_av >= 2:
-    return "high risk/low return over the period"
+%matplotlib widget
+plt.title("Sharpe and Sortino ratios of "+ticker[0])
+plt.plot(ratio_analysis['rolling_sharpe'], label = "Sharpe ratio", c="green")
+plt.plot(ratio_analysis['rolling_sortino'], label = "Sortino ratio", c="orange")
+plt.xlabel("date")
+plt.legend()
+plt.show()
+print(tabulate([["% Sortino ratio below 0:",av_negative_sortino],["% Sortino ratio above 0:", av_positive_sortino]], headers=["Indicator", "in % (by default)"]))
+print(tabulate([["% Sharpe ratio below 0:", av_negative_sharpe],["% Sharpe ratio above 0:", av_positive_sharpe]],headers=["", "                  "]))
+print(tabulate([["% Sortino ratio above Sharpe ratio:", av_negative_risk], ["% Sortino ratio below Sharpe ratio:", av_positive_risk]],headers=["", "      "]))
