@@ -2,11 +2,8 @@
 risk_analysis = pd.DataFrame(index=ticker)
 
 #calculate the daily return for the loaded instrument and the loaded benchmark
-df_returns = pd.DataFrame(df_day['close'].pct_change().dropna())
-bench_returns = pd.DataFrame(bench_day['close'].pct_change().dropna())
-
-#calculate the average return of the ticker
-average_return = np.mean(df_returns, axis=0)
+df_returns = pd.DataFrame(df_day['Close'].pct_change().dropna())
+bench_returns = pd.DataFrame(bench_day['Close'].pct_change().dropna())
 
 #calculate the standard deviation of the ticker
 #https://www.investopedia.com/terms/s/standarddeviation.asp
@@ -25,7 +22,7 @@ risk_analysis['var'] = get_var(df_returns, 1, 0.95)
 #compute Sharpe ratio of the loaded instrument
 def get_sharpe_ratio(df):
     #get the sharpe ratio based on number of loaded days
-    sharpe_ratio = float(pta.sharpe_ratio(df['close'], 0))
+    sharpe_ratio = float(pta.sharpe_ratio(df['Close'], 0))
     return sharpe_ratio
 
 risk_analysis['sharpe ratio'] = get_sharpe_ratio(df_day)
@@ -56,7 +53,7 @@ def get_calmar_ratio(df):
     calmar_ratio = pta.calmar_ratio(df, method='percent')
     return calmar_ratio
 
-risk_analysis['calmar ratio'] = get_calmar_ratio(df_day['close'])
+risk_analysis['calmar ratio'] = get_calmar_ratio(df_day['Close'])
 
 #compute the volatility over the selected period of the loaded instrument
 def get_volatility(df):
@@ -74,10 +71,10 @@ risk_analysis['treynor ratio'] = get_treynor_ratio(df_returns, bench_returns)
 
 #compute the maximum drawdown of the loaded instrument
 def get_max_drawdown(df):
-    max_drawdown = pta.max_drawdown(df_day['close'], all=True)
+    max_drawdown = pta.max_drawdown(df_day['Close'], all=True)
     return max_drawdown['percent']
 
-risk_analysis['max drawdown'] = get_max_drawdown(df_day['close'])
+risk_analysis['max drawdown'] = get_max_drawdown(df_day['Close'])
 
 #compute the Ulcer Index of the loaded instrument
 def get_ulcer_index(df):
@@ -87,8 +84,11 @@ def get_ulcer_index(df):
 risk_analysis['ulcer index'] = get_ulcer_index(df_returns)
 
 #compute the Compound Annual Growth Rate
+
 def get_cagr(df):
-    cagr = pta.cagr(df)
+    cagr = qt.stats.cagr(df)
     return cagr
 
-risk_analysis['cagr'] = get_cagr(df_day['close'])
+risk_analysis['cagr'] = get_cagr(df_day['Close'])
+
+print(risk_analysis)
