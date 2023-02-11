@@ -9,9 +9,9 @@ def calculate_ratios(df):
     #by default, the rolling period is 152 days
     a['rolling_sortino'] = qt.stats.rolling_sortino(df_returns, rolling_period=252)
     #identify when Sharpe ratio is below 0
-    a['sharpe below 0'] = pta.below_value(ratio_analysis['rolling_sharpe'], 0)
+    a['sharpe below 0'] = pta.below_value(a['rolling_sharpe'], 0)
     #identify when Sortino ratio is below 0
-    a['sortino below 0'] = pta.below_value(ratio_analysis['rolling_sortino'], 0)
+    a['sortino below 0'] = pta.below_value(a['rolling_sortino'], 0)
     return a
 
 ratio_analysis = calculate_ratios(df_returns)
@@ -58,7 +58,7 @@ result = skewed_returns(sortino_ratio,sharpe_ratio)
 #calculate the average price of the asset over the loaded time period
 def av_price(df, column):
     av_price = float(np.mean(df[column]))
-    av_price = round(average_price, 2)
+    av_price = round(av_price, 2)
     df['Average price'] = av_price
     return df
 
@@ -95,7 +95,7 @@ def calculate_av_return(df,column,days):
 calculate_av_return(df_returns,"Close",259)
 
 #compute the YTD return of the asset & the benchmark
-df_ytd=calculate_ytd_returns(df_returns,'Close')
+df_ytd_return=calculate_ytd_returns(df_returns,'Close')
 bench_ytd_return=calculate_ytd_returns(bench_returns,'Close')
 
 #compute the returns for the other defined time periods
@@ -118,7 +118,7 @@ def return_comparison(a,b):
     return c
 
 #compare the asset cagr with the benchmark's return
-diff_benchmark = return_comparison(cagr, bench_return)
+diff_benchmark = return_comparison(cagr, bench_period_return)
 
 #compute the compounded total return over the loaded period
 def compound_return(df):
@@ -150,7 +150,7 @@ figure, axis = plt.subplots(3,1, figsize=(15,15))
 axis[0].set_title("Daily evolution of price of "+t)
 axis[0].set_ylabel("price in $")
 axis[0].plot(df_day['Close'], label="price", c="blue")
-axis[0].plot(Kalman_df, label='Kalman', c="orange")
+axis[0].plot(df_day['Kalman price'], label='Kalman', c="orange")
 axis[0].plot(df_day['Average price'], label="avg price over the period", c="red")
 axis[0].legend(loc="upper right")
 #plot the compounded returns of the asset and the benchmark
