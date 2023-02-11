@@ -1,10 +1,10 @@
 ratio_analysis = pd.DataFrame()
 #calculate the rolling Sharpe ratio over the loaded time period
 #by default, the rolling period is 152 days
-ratio_analysis['rolling_sharpe'] = qt.stats.rolling_sharpe(df_returns)
+ratio_analysis['rolling_sharpe'] = qt.stats.rolling_sharpe(df_returns, rolling_period=252)
 #calculate the Sortino ratio over the loaded time period 
 #by default, the rolling period is 152 days
-ratio_analysis['rolling_sortino'] = qt.stats.rolling_sortino(df_returns)
+ratio_analysis['rolling_sortino'] = qt.stats.rolling_sortino(df_returns, rolling_period=252)
 
 #identify when Sharpe ratio is below 0
 ratio_analysis['sharpe below 0'] = pta.below_value(ratio_analysis['rolling_sharpe'], 0)
