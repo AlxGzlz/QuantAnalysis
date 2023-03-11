@@ -1,7 +1,8 @@
+#based on PQN020 Newsletter: "Seeking alpha? Hedge your beta with Python"
+#https://pyquantnews.com/seeking-alpha-hedge-your-beta-with-python/
 #hedge the beta of your selected ticker or portfolio
 X = bench_returns.values
 Y = df_returns.values
-
 #define the linear regression for the selected ticker
 def linreg(x,y): 
     #add a column of ls to fit alpha
@@ -12,24 +13,28 @@ def linreg(x,y):
     return model.params[0], model.params[1]
 
 alpha, beta = linreg(X,Y)
-print(f"Alpha: {alpha}")
-print(f"Beta: {beta}")
-
-X2 = np.linspace(X.min(), X.max(), 100)
-Y_hat = X2 * beta - alpha
-
-#plot the raw data
-plt.scatter(X, Y, alpha=0.3)
-plt.xlabel("Benchmark Daily Return")
-plt.ylabel("Portfolio Daily Return")
-#add the regression line
-plt.plot(X2, Y_hat, 'r', alpha=0.9)
 
 #seek to hedge the beta of the selected ticker, meaning to get beta = 0
 #be short a number of shares in the market equal to the beta plus ticker
 hedged_portfolio = -1 * beta * bench_returns + df_returns
 hedged_portfolio.name = "Heged Portfolio"
-
 P = hedged_portfolio.values 
-alpha, beta = linreg(X, P)
-print(f"Hedged_Beta: {beta}")
+alpha, hedged_beta = linreg(X, P)
+
+def linreg_pred(df,ind):
+    pred = df*ind
+    return pred
+
+beta_pred=linreg_pred(df_day['Close'],beta)
+hedgedbeta_pred=linreg_pred(df_day['Close'],hedged_beta)
+
+#plot the results
+%matplotlib widget
+plt.title('Comparison between '+t+' price and its linear regression prediction')
+plt.plot(df_day['Close'])
+plt.plot(beta_pred)
+plt.ylabel('Price in $')
+plt.legend(['Asset','Linear Regression Prediction'])
+print(f"Alpha:",alpha)
+print(f"Beta:",beta)
+print(f"Hedged Beta:",hedged_beta)
